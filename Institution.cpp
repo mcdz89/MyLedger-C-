@@ -108,9 +108,11 @@ int Institution::selectInst() {
 
     // If the selection is not 0, use the selected index to get the ID of the selected Institution from the map
     int selectedID = 0;
-    if (sel != 0) {
+    if (sel > 1) {
         auto it = std::next(inst.begin(), sel - 1); // Adjust the index to match the map's iterator
         selectedID = it->first; // Get the ID from the map
+    } else {
+        selectedID = 0;
     }
 
     return selectedID;

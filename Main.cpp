@@ -14,8 +14,9 @@
 #include "Date.hpp"
 
 std::string printMenu(std::string& complete);
-void printTable();
+void printTable(const std::vector<std::vector<std::string>>& data);
 void addAcc();
+void viewAcc();
 
 int main() {
     system("clear");
@@ -35,10 +36,18 @@ int main() {
 }
 
 std::string printMenu(std::string& complete) {
+    int accMenuOption = 0;
+
+    // Make a unique pointer to a Account object
+    std::unique_ptr<Account> acc(new Account());
+
+    accMenuOption = acc->checkAcc();
+
     /*********************************
     * Main Menu
     * 1 Accounts
 	* - 1 Add Bank Account
+    * - 2 View Bank Account
     ********************************/
    // Menu object calls
     Menu* mainMenu;   // Displays the Main Menu
@@ -48,15 +57,13 @@ std::string printMenu(std::string& complete) {
     accMenu = new Menu("1", "Accounts", 1, "q");
     mainMenu->addMenuItem(accMenu);
     accMenu->addMenuItem(new MenuCommand("1", "Add Bank Account", 1, addAcc));
+    accMenu->addMenuItem(new MenuCommand("2", "View Bank Account", accMenuOption, viewAcc));
 
     complete = mainMenu->execute();
 
     return complete;
 }
 
-/****************************
-* Display a formatted table *
-****************************/
 /****************************
 * Display a formatted table *
 ****************************/
@@ -123,6 +130,7 @@ void addAcc() {
     std::vector<int> dateVec;
     bool instExists = false;
     bool complete = false;
+    bool newInst = false;
     std::vector<std::vector<std::string>> table;
 
     // Instantiate pointers to class objects
@@ -143,19 +151,15 @@ void addAcc() {
 
         /* This sections covers adding a new Insitutitom */
 
-        if (inst->countInst() == 0) {
-            // If an institution does not exist, add one
+        instExists = (inst->countInst() == 0) ? false : true;
+
+        if (!instExists) {
+            // Call the Institution's set method
             instName = inst->setName();
-            instExists = true;
-        } else if (instExists) {
-            // Else if an institution does exist, select one
-            instSel = inst->selectInst();
-            instName = inst->getName(instSel);
-            instExists = false;
         } else {
-            // Else if an institution exists, and user wants to add another
-            instName = inst->setName();
-            instExists = true;
+            instSel = inst->selectInst();
+            instName = (instSel == 0) ? inst->setName() : inst->getName(instSel);
+            newInst = (instSel == 0) ? true : false;
         }
 
         /* This section covers adding a new Account */
@@ -189,35 +193,7 @@ void addAcc() {
         // Display table
         printTable(table);
 
-        /* Print out the Account information
-        std::cout << "| Institution |";
-        std::cout << " Account |";
-        std::cout << " Open Date |";
-        std::cout << " Type |";
-        std::cout << " Interest |";
-        std::cout << " Status |";
-        std::cout << " Balance |\n";
-
-        std::cout << "|";
-        std::cout << std::setfill('-') << std::setw(0) << "|";
-        std::cout << std::setfill('-') << std::setw(0) << "|";
-        std::cout << std::setfill('-') << std::setw(0) << "|";
-        std::cout << std::setfill('-') << std::setw(0) << "|";
-        std::cout << std::setfill('-') << std::setw(0) << "|";
-        std::cout << std::setfill('-') << std::setw(0) << "|";
-        std::cout << std::setfill('-') << std::setw(0) << "|\n";
-
-        std::cout << "| " << std::left << std::setw(0) << instName << " | ";
-        std::cout << std::left << std::setw(0) << accName << " | ";
-        std::cout << std::left << std::setw(0) << hr_date << " | ";
-        std::cout << std::left << std::setw(0) << accTypeStr << " | ";
-        std::cout << std::left << std::setw(0) << accInterestStr << " | ";
-        std::cout << std::left << std::setw(0) << accStatusStr << " | $";
-        std::cout << std::left << std::setw(0) << accBal << "|\n";
-        */
-
         // Prompt the user to verify if the data is correct, if not then continue, else, add the account
-        // Prompt the user to verify if the data is correct
         verify = 'x';
         std::cout << "Is the data correct? (Y/N): ";
         std::cin >> verify;
@@ -226,14 +202,14 @@ void addAcc() {
         if (verify == 'y' || verify == 'Y' || verify == 'n' || verify == 'N') {
             // If account data is correct
             if (verify == 'Y' || verify == 'y') {
-                if (!instExists) {
+                if (!instExists || newInst == true) {
                     // Create a unique pointer to an Institution object and call the 
                     // Institution's constructor to add a new institution
                     std::unique_ptr<Institution> newInstitution = std::make_unique<Institution>(instName, instSel);
-                }
 
-                // The id of the new institution
+                    // The id of the new institution
                     instSel = inst->getID(instName);
+                }
                 
                 // Replace whitespaces with underscores
                 accName = db->replaceWS(accName);
@@ -265,4 +241,16 @@ void addAcc() {
             continue;
         }
     }
+}
+
+void viewAcc() {
+    // Create a unique pointer to an Account object and call the 
+    // Account's constructor
+    std::unique_ptr<Account> account = std::make_unique<Account>();
+
+    system("clear");
+    std::cout << "View Account" << std::endl << std::endl;
+
+    account->viewAcc();
+
 }
