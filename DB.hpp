@@ -10,7 +10,7 @@
 
 class DB {
 private:
-     std::string m_conninfo = "host=localhost port=5432 dbname=dbname user=username password=Password!";
+     std::string m_conninfo = "host=localhost port=5432 dbname=dbname user=username password=password";
 public:
     DB (){}
     ~DB(){}
