@@ -36,14 +36,14 @@ public:
 	Account(int inst, int type, std::string & name, int active, long double balance, int interest, long double apy, std::string & rDate, int day, int month, int year);
 	
 	// Constructor for viewing account
-	Account(std::string instName, std::string accName, std::string accTypeStr, std::string hr_date, std::string accInterestStr, std::string accStatusStr, std::string accBal){
+	Account(std::string instName, std::string accName, std::string accTypeStr, std::string hr_date, std::string accInterestStr, std::string accStatusStr, long double accBal){
 		m_instName = instName;
 		m_accName = accName;
 		m_typeStr = accTypeStr;
 		m_rDate = hr_date;
 		m_interestStr = accInterestStr;
 		m_activeStr = accStatusStr;
-		m_balanceStr =accBal;
+		m_balance =accBal;
 	}
     Account() {}
 	~Account() {}

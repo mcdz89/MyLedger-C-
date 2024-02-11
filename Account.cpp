@@ -317,6 +317,10 @@ void Account::printTable(std::vector<std::string> & header, std::vector<Account 
     std::vector<size_t> dataColumnWidths(7, 0); // Initialize vector to store data column widths
     std::vector<size_t> maxColumnWidths(7, 0); // Initialize vector to store maximum column widths
 
+    for (const auto& row : data) {
+        std::cout << "Balance: " << sizeof(row->m_balance) << std::endl;
+    }
+
     // Calculate the maximum width for each column in the data
     for (const auto& row : data) {
         // Update the maximum width for each column
@@ -326,7 +330,7 @@ void Account::printTable(std::vector<std::string> & header, std::vector<Account 
         dataColumnWidths[3] = 13; // Opened / rDate
         dataColumnWidths[4] = 10; // Interest
         dataColumnWidths[5] = 9; // Active
-        dataColumnWidths[6] = std::max(dataColumnWidths[6], row->m_balanceStr.size()); // Balance
+        dataColumnWidths[6] = std::max(dataColumnWidths[6], sizeof(row->m_balance)); // Balance
     }
 
     // Calculate the maximum width between dataColumnWidths and headerColumnWidths for each column
@@ -359,7 +363,7 @@ void Account::printTable(std::vector<std::string> & header, std::vector<Account 
 
     // Print out the data rows
     for (const auto& row : data) {
-        long double balance = stold(row->m_balanceStr);
+        //long double balance = stold(row->m_balanceStr);
         std::cout << "| ";
         std::cout << std::left << std::setw(static_cast<int>(maxColumnWidths[0])) << row->m_instName << "| ";
         std::cout << std::left << std::setw(static_cast<int>(maxColumnWidths[1])) << row->m_accName << "| ";
@@ -367,7 +371,8 @@ void Account::printTable(std::vector<std::string> & header, std::vector<Account 
         std::cout << std::left << std::setw(static_cast<int>(maxColumnWidths[3])) << row->m_rDate << "| ";
         std::cout << std::left << std::setw(static_cast<int>(maxColumnWidths[4])) << row->m_interestStr << "| ";
         std::cout << std::left << std::setw(static_cast<int>(maxColumnWidths[5])) << row->m_activeStr << "| ";
-        std::cout << std::left << std::setw(static_cast<int>(maxColumnWidths[6])) << balance << "|";
+        std::cout << std::left << "$";
+        std::cout << std::right << std::setw(static_cast<int>(maxColumnWidths[6] - 2)) << row->m_balance << " |";
         std::cout << std::endl;
     }
 
@@ -441,7 +446,7 @@ void Account::viewAcc() {
                 r_Date,
                 (row["Interest"].as<int>() == 1) ? "Yes" : "No",
                 (row["Active"].as<int>() == 1) ? "Yes" : "No",
-                row["Balance"].as<std::string>()
+                row["Balance"].as<long double>()
             );
             data.push_back(Acct);
         }
